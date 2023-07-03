@@ -63,3 +63,73 @@ app.post('/voitures', (req, res) => {
       res.status(500).send('Erreur lors de l\'insertion de la voiture');
     });
 });
+
+app.get('/voitures', (req, res) => {
+  // Utiliser le modèle Mongoose pour récupérer toutes les voitures
+  VoitureModel.find()
+    .then((voitures) => {
+      res.json(voitures); // Répondre avec les voitures récupérées au format JSON
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la récupération des voitures', error);
+      res.status(500).send('Erreur lors de la récupération des voitures');
+    });
+});
+
+// Route pour récupérer une voiture par son ID
+app.get('/voitures/:id', (req, res) => {
+  const voitureId = req.params.id; // Récupérer l'ID de la voiture depuis les paramètres de la requête
+
+  // Utiliser le modèle Mongoose pour rechercher la voiture par son ID
+  VoitureModel.findById(voitureId)
+    .then((voiture) => {
+      if (voiture) {
+        res.json(voiture); // Répondre avec la voiture trouvée au format JSON
+      } else {
+        res.status(404).send('Voiture non trouvée'); // Répondre avec un message d'erreur si la voiture n'est pas trouvée
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la récupération de la voiture', error);
+      res.status(500).send('Erreur lors de la récupération de la voiture');
+    });
+});
+
+// Route pour mettre à jour une voiture par son ID
+app.put('/voitures/:id', (req, res) => {
+  const voitureId = req.params.id; // Récupérer l'ID de la voiture depuis les paramètres de la requête
+  const { couleur, marque } = req.body; // Récupérer les données de mise à jour depuis le corps de la requête
+
+  // Utiliser le modèle Mongoose pour mettre à jour la voiture par son ID
+  VoitureModel.findByIdAndUpdate(voitureId, { couleur, marque }, { new: true })
+    .then((voitureMiseAJour) => {
+      if (voitureMiseAJour) {
+        res.json(voitureMiseAJour); // Répondre avec la voiture mise à jour au format JSON
+      } else {
+        res.status(404).send('Voiture non trouvée'); // Répondre avec un message d'erreur si la voiture n'est pas trouvée
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la mise à jour de la voiture', error);
+      res.status(500).send('Erreur lors de la mise à jour de la voiture');
+    });
+});
+
+// Route pour supprimer une voiture par son ID
+app.delete('/voitures/:id', (req, res) => {
+  const voitureId = req.params.id; // Récupérer l'ID de la voiture depuis les paramètres de la requête
+
+  // Utiliser le modèle Mongoose pour supprimer la voiture par son ID
+  VoitureModel.findByIdAndRemove(voitureId)
+    .then((voitureSupprimee) => {
+      if (voitureSupprimee) {
+        res.json(voitureSupprimee); // Répondre avec la voiture supprimée au format JSON
+      } else {
+        res.status(404).send('Voiture non trouvée'); // Répondre avec un message d'erreur si la voiture n'est pas trouvée
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur lors de la suppression de la voiture', error);
+      res.status(500).send('Erreur lors de la suppression de la voiture');
+    });
+});
