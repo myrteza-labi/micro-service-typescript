@@ -2,6 +2,8 @@ require('dotenv').config();
 const R = require('ramda');
 const mongoose = require('mongoose');
 const express = require('express');
+const multer = require('multer');
+
 
 const uri = process.env.DB_URI;
 const app = express();
@@ -26,6 +28,27 @@ const voitureSchema = new mongoose.Schema({
   marque: String,
 });
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Répertoire de destination des fichiers uploadés
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/upload-image', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    res.status(400).send('Aucune image n\'a été envoyée.');
+  } else {
+    res.send('L\'image a été téléchargée avec succès !');
+  }
+});
+
+
 const VoitureModel = mongoose.model('Voiture', voitureSchema);
 
 // Middleware pour gérer les erreurs
@@ -33,6 +56,7 @@ const errorHandler = (res, error) => {
   console.error(error);
   res.status(500).send('Erreur serveur');
 };
+
 
 // Middleware pour vérifier si une voiture existe
 const checkVoitureExists = (req, res, next) => {
