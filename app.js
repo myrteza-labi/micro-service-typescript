@@ -7,7 +7,7 @@ const multer = require('multer');
 
 const uri = process.env.DB_URI;
 const app = express();
-const port = 3000;
+const port = 4000;
 
 app.use(express.json()); // Middleware pour traiter les données du corps des requêtes
 
@@ -86,11 +86,15 @@ const createVoiture = (req, res) => {
   const voiture = { couleur, marque };
 
   VoitureModel.create(voiture)
-    .then(R.partial(sendJsonResponse, [res]))
+    .then(() => {
+      res.status(201); // Définir le statut 201 pour la création réussie
+      sendJsonResponse(res, voiture);
+    })
     .catch((error) => {
       errorHandler(res, error);
     });
 };
+
 
 // Fonction pour récupérer toutes les voitures
 const getAllVoitures = (req, res) => {
@@ -142,4 +146,6 @@ app.put('/voitures/:id', checkVoitureExists, updateVoitureById);
 app.delete('/voitures/:id', checkVoitureExists, deleteVoitureById);
 
 // Démarrer le serveur
-app.listen(port, () => console.log('Server listen port 3000'));
+app.listen(port, () => console.log('Server listen port 4000'));
+
+module.exports = app;
