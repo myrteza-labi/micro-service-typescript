@@ -1,19 +1,19 @@
-const axios = require('axios');
-const { map } = require('ramda');
+import axios from 'axios';
+import { map } from 'ramda';
 
 test('GET /voitures should retrieve an array of cars with expected properties', async () => {
   const response = await axios.get('http://localhost:4000/voitures');
   expect(response.status).toBe(200);
 
-  const expectedProperties = { couleur: expect.any(String), marque: expect.any(String) };
+  const expectedProperties = { couleur: expect.stringMatching(/.*/), marque: expect.stringMatching(/.*/) };
   const cars = response.data;
 
   expect(Array.isArray(cars)).toBe(true);
-  map(car => {
+  map((car: any) => {
     expect(car).toEqual(expect.objectContaining(expectedProperties));
-  }, cars);
+  })(cars);
+  
 });
-
 
 test('POST /voitures should create a new car', async () => {
   const newCar = {
@@ -25,8 +25,9 @@ test('POST /voitures should create a new car', async () => {
 
   expect(response.status).toBe(201); // Assuming 201 for successful creation
 
-  // Ignorer les propriétés `_id` et `__v` lors de la comparaison
-  const { _id, __v, ...expectedCar } = newCar;
+  // Ignorer la propriété `_id` lors de la comparaison
+  const { _id, __v, ...expectedCar }: { couleur: string; marque: string; __v?: any; _id?: any} = newCar;
 
   expect(response.data).toEqual(expect.objectContaining(expectedCar));
 });
+

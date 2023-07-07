@@ -1,5 +1,5 @@
 require('dotenv').config();
-const R = require('ramda');
+import * as R from 'ramda'
 const mongoose = require('mongoose');
 const express = require('express');
 const multer = require('multer');
@@ -19,7 +19,7 @@ mongoose.connection.on('open', () => {
   console.log(`Connected to MongoDB Atlas ${new Date()}`);
 });
 
-mongoose.connection.on('error', (error) => {
+mongoose.connection.on('error', (error:any) => {
   console.error('Failed to connect to MongoDB Atlas', error);
 });
 
