@@ -2,9 +2,10 @@
   "name": "myapp",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "start": "tsc && node dist/app.js"
   },
   "author": "",
   "license": "ISC",

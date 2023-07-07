@@ -30,7 +30,7 @@ test('GET /voitures should retrieve an array of cars with expected properties', 
     expect(Array.isArray(cars)).toBe(true);
     (0, ramda_1.map)((car) => {
         expect(car).toEqual(expect.objectContaining(expectedProperties));
-    }, cars);
+    })(cars);
 }));
 test('POST /voitures should create a new car', () => __awaiter(void 0, void 0, void 0, function* () {
     const newCar = {
